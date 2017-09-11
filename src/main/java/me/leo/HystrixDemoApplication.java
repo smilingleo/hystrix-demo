@@ -30,6 +30,7 @@ public class HystrixDemoApplication extends Application<HystrixDemoConfiguration
 
     @Override
     public void initialize(final Bootstrap<HystrixDemoConfiguration> bootstrap) {
+        // publish Coda format metrics.
         HystrixCodaHaleMetricsPublisher metricsPublisher = new HystrixCodaHaleMetricsPublisher(bootstrap.getMetricRegistry());
         HystrixPlugins.getInstance().registerMetricsPublisher(metricsPublisher);
     }
@@ -60,9 +61,11 @@ public class HystrixDemoApplication extends Application<HystrixDemoConfiguration
 
         ReviewClient reviewClient = new ReviewClient(reviewC);
         environment.jersey().register(reviewClient);
+
+        // a client endpoint which implementation is nothing but calling the above clients.
         environment.jersey().register(new ClientResource(productClient, detailClient, reviewClient));
 
-
+        // to enable metric stream.
         environment.getApplicationContext()
                 .addServlet("com.netflix.hystrix.contrib.metrics.eventstream.HystrixMetricsStreamServlet", "/hystrix.stream");
     }

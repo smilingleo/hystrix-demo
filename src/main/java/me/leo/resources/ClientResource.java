@@ -17,6 +17,7 @@ import me.leo.client.review.GetReviewsByProductCmd;
 import me.leo.client.review.ReviewClient;
 
 /**
+ * Client is a bit confusing, by `client`, it means the client of `product service`, `review service`.
  * Created by leo on 9/10/17.
  */
 @Path("/client/products")

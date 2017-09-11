@@ -21,7 +21,7 @@ Let's assume the 3 APIs are served from 3 different services.
 To see your applications health enter url `http://localhost:8081/healthcheck`
 
 
-## Tasks
+## Runtime Configuration
 
 Run the following script to control the system behaviour:
 ```bash
@@ -30,15 +30,28 @@ http post localhost:8081/tasks/config review_latency==500 review_fallback==false
 
 * product_latency, default 10 ms;
 * product_timeout, default 1000 ms;
-* product_cb_open, default `false` , set `true` to force open circuit breaker.
+* product_cb_open, default `null` , set `true` to force open circuit breaker, `false` to force close it.
 * detail_latency, default 10 ms;
 * detail_timeout, default 1000 ms;
-* detail_cb_open, default `false` , set `true` to force open circuit breaker.
+* detail_cb_open, default `null` , set `true` to force open circuit breaker, `false` to force close it.
 * review_latency, default 10 ms;
 * review_timeout, default 1000 ms;
-* review_cb_open, default `false` , set `true` to force open circuit breaker.
+* review_cb_open, default `null` , set `true` to force open circuit breaker, `false` to force close it.
 * review_fallback, default `true`
     - If fallback is not enabled, when latency is increased, the API of `GET /client/products` will fail with 500 error.
-    
+
+## Hystrix Dashboard
+Check out Hystrix repo, goto `hystrix-dashboard` folder and run `../gradlew appRun`, add `http://localhost:8080/hystrix.stream` and monitor.
+
+## How to Adopt Hystrix
+1. To wrap API invocation with a `HystrixCommand` 
+For each API invocation, wrap it with a `HystrixCommand`, the original client SDK doesn't need to be changed.
+For example, `ProductClient` is the original client SDK. Keep it untouched, add `ProductListCmd`.
+
+1. To change the way you call the client SDK.
+For example, in `ClientResource`, without Hystrix, you use the `productClient.list()` to get product list, 
+with Hystrix, you just need to replace above invocation to `new ProductListCmd(productClient).execute()`.
+
+
 ## Reference
 1. [Resilience Engineering in a Microservice Landscape • Maurice Zeijen](https://www.youtube.com/watch?v=Rduky8rzTwc&t=514s)

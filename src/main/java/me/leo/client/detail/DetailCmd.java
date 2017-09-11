@@ -1,5 +1,6 @@
 package me.leo.client.detail;
 
+import com.netflix.config.ConfigurationManager;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandProperties;
@@ -21,16 +22,21 @@ public class DetailCmd extends HystrixCommand<Product> {
      * @param id
      */
     public DetailCmd(DetailClient client, String id) {
-        super(HystrixCommandGroupKey.Factory.asKey("DetailClients"));
+        super(HystrixCommandGroupKey.Factory.asKey("DetailCmd"));
         HystrixCommandProperties.Setter()
                 .withExecutionTimeoutInMilliseconds(Config.DETAIL_TIMEOUT);
-        if (Config.DETAIL_CB_OPEN) {
-            HystrixCommandProperties.Setter()
-                    .withCircuitBreakerForceOpen(true);
+
+        if (Config.DETAIL_CB_OPEN != null) {
+            if (Config.DETAIL_CB_OPEN) {
+                ConfigurationManager.getConfigInstance().setProperty("hystrix.command.DetailCmd.circuitBreaker.forceOpen", true);
+            } else {
+                ConfigurationManager.getConfigInstance().setProperty("hystrix.command.DetailCmd.circuitBreaker.forceClosed", true);
+            }
         } else {
-            HystrixCommandProperties.Setter()
-                    .withCircuitBreakerForceClosed(true);
+            ConfigurationManager.getConfigInstance().setProperty("hystrix.command.DetailCmd.circuitBreaker.forceOpen", false);
+            ConfigurationManager.getConfigInstance().setProperty("hystrix.command.DetailCmd.circuitBreaker.forceClosed", false);
         }
+
         this.client = client;
         this.id = id;
     }

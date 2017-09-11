@@ -19,13 +19,19 @@ public class GetReviewsByProductCmd extends HystrixCommand<List<Review>> {
     String id;
 
     public GetReviewsByProductCmd(ReviewClient client, String id) {
-        super(HystrixCommandGroupKey.Factory.asKey("ReviewClients"));
+        super(HystrixCommandGroupKey.Factory.asKey("GetReviewsByProductCmd"));
         HystrixCommandProperties.Setter setter = HystrixCommandProperties.Setter();
         setter.withExecutionTimeoutInMilliseconds(Config.REVIEW_TIMEOUT);
-        if (Config.REVIEW_CB_OPEN) {
-            ConfigurationManager.getConfigInstance().setProperty("hystrix.command.ReviewClients.circuitBreaker.forceOpen", true);
+
+        if (Config.REVIEW_CB_OPEN != null) {
+            if (Config.REVIEW_CB_OPEN) {
+                ConfigurationManager.getConfigInstance().setProperty("hystrix.command.GetReviewsByProductCmd.circuitBreaker.forceOpen", true);
+            } else {
+                ConfigurationManager.getConfigInstance().setProperty("hystrix.command.GetReviewsByProductCmd.circuitBreaker.forceClosed", true);
+            }
         } else {
-            ConfigurationManager.getConfigInstance().setProperty("hystrix.command.ReviewClients.circuitBreaker.forceClosed", true);
+            ConfigurationManager.getConfigInstance().setProperty("hystrix.command.GetReviewsByProductCmd.circuitBreaker.forceOpen", false);
+            ConfigurationManager.getConfigInstance().setProperty("hystrix.command.GetReviewsByProductCmd.circuitBreaker.forceClosed", false);
         }
 
         this.client = client;

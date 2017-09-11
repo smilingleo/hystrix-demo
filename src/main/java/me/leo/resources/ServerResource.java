@@ -16,6 +16,7 @@ import me.leo.api.Product;
 import me.leo.api.Review;
 
 /**
+ * Just imaging these 3 APIs are running on different hosts, e.g., 3 different services.
  * Created by leo on 9/10/17.
  */
 @Path("/products")
