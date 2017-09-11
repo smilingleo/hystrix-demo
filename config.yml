@@ -1,0 +1,28 @@
+logging:
+  level: INFO
+  loggers:
+    me.leo: DEBUG
+
+productJerseyClient:
+  minThreads: 1
+  maxThreads: 10
+  workQueueSize: 8
+  gzipEnabled: true
+  gzipEnabledForRequests: true
+  chunkedEncodingEnabled: true
+
+detailJerseyClient:
+  minThreads: 2
+  maxThreads: 20
+  workQueueSize: 8
+  gzipEnabled: true
+  gzipEnabledForRequests: true
+  chunkedEncodingEnabled: true
+
+reviewJerseyClient:
+  minThreads: 4
+  maxThreads: 40
+  workQueueSize: 8
+  gzipEnabled: true
+  gzipEnabledForRequests: true
+  chunkedEncodingEnabled: true
