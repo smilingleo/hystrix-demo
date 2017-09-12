@@ -1,5 +1,6 @@
 package me.leo.client.detail;
 
+import java.util.Optional;
 import javax.ws.rs.client.Client;
 
 import me.leo.api.Product;
@@ -9,13 +10,13 @@ import me.leo.api.Product;
  */
 public class DetailClient {
     private Client client;
-
+    private String url = Optional.ofNullable(System.getenv("DETAIL_URL")).orElse("http://localhost:8080");
     public DetailClient(Client client) {
         this.client = client;
     }
 
     public Product getProduct(String id) {
-        Product rtn = client.target("http://localhost:8080/products/" + id)
+        Product rtn = client.target(url + "/products/" + id)
                 .request()
                 .buildGet()
                 .invoke(Product.class);

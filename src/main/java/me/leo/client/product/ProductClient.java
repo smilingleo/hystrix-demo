@@ -2,6 +2,7 @@ package me.leo.client.product;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.ws.rs.client.Client;
 
@@ -12,13 +13,13 @@ import me.leo.api.Product;
  */
 public class ProductClient {
     private Client client;
-
+    private String url = Optional.ofNullable(System.getenv("PRODUCT_URL")).orElse("http://localhost:8080");
     public ProductClient(Client client) {
         this.client = client;
     }
 
     public List<Product> list() {
-        List<Map> list = client.target("http://localhost:8080/products")
+        List<Map> list = client.target(url + "/products")
                 .request()
                 .buildGet()
                 .invoke(List.class);
