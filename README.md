@@ -12,14 +12,13 @@ Let's assume the 3 APIs are served from 3 different services.
 
 ## How to start the HystrixDemo application
 
-1. Run `mvn clean install` to build your application
+1. Run `mvn clean package` to build your application
 1. Start application with `java -jar target/hystrix-demo-server-1.0-SNAPSHOT.jar server config.yml`
 1. To check that your application is running enter url `http://localhost:8080`
 
 ## Health Check
 
 To see your applications health enter url `http://localhost:8081/healthcheck`
-
 
 ## Runtime Configuration
 
@@ -42,6 +41,14 @@ http post localhost:8081/tasks/config review_latency==500 review_fallback==false
 
 ## Hystrix Dashboard
 Check out Hystrix repo, goto `hystrix-dashboard` folder and run `../gradlew appRun`, add `http://localhost:8080/hystrix.stream` and monitor.
+
+
+## Run with Docker
+1. Run `mvn clean package` to build the shaded jar file
+1. Run `docker build -t hystrix-demo .` to build the docker image
+1. Run `docker-compose up` to bring up the services.
+1. Give it some workload by `ab -c 5 -n 10000 localhost:8080/client/products`
+1. Register the metric stream to Hystrix dashboard.
 
 ## How to Adopt Hystrix
 1. To wrap API invocation with a `HystrixCommand` 
