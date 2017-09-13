@@ -15,6 +15,15 @@ services:
     ports:
       - "8080"
 
+  review_lb:
+    image: dockercloud/haproxy
+    links:
+      - review
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 80
+
   ui:
     image: hystrix-demo
     ports:
@@ -22,4 +31,9 @@ services:
     environment:
       PRODUCT_URL: http://product:8080
       DETAIL_URL: http://detail:8080
-      REVIEW_URL: http://review:8080
+      REVIEW_URL: http://review_lb:80
+
+  dashboard:
+    image: smilingleo/hystrix-dashboard:1.6.0
+    ports:
+      - "7979:8080"

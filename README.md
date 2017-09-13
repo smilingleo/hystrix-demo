@@ -39,16 +39,28 @@ http post localhost:8081/tasks/config review_latency==500 review_fallback==false
 * review_fallback, default `true`
     - If fallback is not enabled, when latency is increased, the API of `GET /client/products` will fail with 500 error.
 
-## Hystrix Dashboard
-Check out Hystrix repo, goto `hystrix-dashboard` folder and run `../gradlew appRun`, add `http://localhost:8080/hystrix.stream` and monitor.
-
 
 ## Run with Docker
+The `docker-compose.yml` consists of 4 services:
+* product service
+* product detail service (I know it doesn't make sense to have a separate service for product detail)
+* review service (with a load balancer in front)
+* ui app which invokes APIs served by above 3 services
+* hystrix dashboard
+
 1. Run `mvn clean package` to build the shaded jar file
 1. Run `docker build -t hystrix-demo .` to build the docker image
 1. Run `docker-compose up` to bring up the services.
 1. Give it some workload by `ab -c 5 -n 10000 localhost:8080/client/products`
 1. Register the metric stream to Hystrix dashboard.
+1. To scale review service, run `docker-compose scale review=3`
+
+
+### Hystrix Dashboard
+Open dashboard from `http://localhost:7979/hystrix-dashboard/`, add `http://ui:8080/hystrix.stream` and monitor.
+
+Note:
+ - You can not add `localhost:8080/hystrix.stream` since it will make `dashboard` service talk to itself (localhost).
 
 ## How to Adopt Hystrix
 1. To wrap API invocation with a `HystrixCommand` 
