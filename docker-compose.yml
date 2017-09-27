@@ -28,6 +28,7 @@ services:
     image: hystrix-demo
     ports:
       - "8080:8080"
+      - "8081:8081"
     environment:
       PRODUCT_URL: http://product:8080
       DETAIL_URL: http://detail:8080
